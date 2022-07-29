@@ -12,8 +12,8 @@ const saltRounds = 10;
 
 // DATABASE CONFIG
 db.query("CREATE TABLE IF NOT EXISTS users ( \
-  Username varchar(50), \
-  Password varchar(60));"
+  Username varchar(50) NOT NULL UNIQUE, \
+  Password varchar(60) NOT NULL);"
 );
 
 // DEVELOPERS SHOULD ADD CODE HERE
@@ -33,6 +33,12 @@ express()
   .listen(PORT, () => console.log(`Listening on ${PORT}`))
 
 // AUTH FUNCTIONS
+
+// Register User function
+// Return Values: 
+//   Void
+// Possible Error Values:
+//    QueryResultError: This happens if the username is already taken
 function registerUser(username, password) {
   bcrypt.hash(password, saltRounds, (err, hash) => {
     db.none("SELECT * FROM users WHERE Username=$1;", [username])
@@ -40,6 +46,10 @@ function registerUser(username, password) {
   })
 }
 
+// Login User function
+// Return Values:
+//    null: if matching user does not exist
+//    object: returns the correct user
 var fakeHash;
 bcrypt.hash('2', saltRounds, (err, hash) => {fakeHash = hash});
 function loginUser(username, password) {
@@ -48,6 +58,9 @@ function loginUser(username, password) {
       if (user) { bcrypt.compare(password, user.Password, (err, loggedIn) => {
         if (loggedIn) { return user; }
       }) }
-      else { bcrypt.compare('1', fakeAuth) }
+      else {
+        bcrypt.compare('1', fakeAuth)
+        return null;
+      }
     })
 }
