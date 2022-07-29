@@ -1,5 +1,5 @@
 {
-  "name": "node-js-getting-started",
+  "name": "js-getting-started",
   "version": "0.3.0",
   "description": "A sample Node.js app using Express 4",
   "engines": {
@@ -23,12 +23,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hightechu/techccelerator-2022-template.git"
+    "url": "git+https://github.com/hightechu/techccelerator-2022-template.git"
   },
   "keywords": [
     "node",
     "heroku",
     "express"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hightechu/techccelerator-2022-template/issues"
+  },
+  "homepage": "https://github.com/hightechu/techccelerator-2022-template#readme",
+  "author": "aabuelazm"
 }
