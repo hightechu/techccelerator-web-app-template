@@ -1,0 +1,10 @@
+/* Additional styles go here */
+header {
+  padding: 0 0.25rem;
+  margin-bottom: 2rem;
+}
+
+/* Bootstrap Fix */
+.row {
+  padding: 0 1.25rem;
+}

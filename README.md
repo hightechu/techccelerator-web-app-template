@@ -14,6 +14,8 @@ The HighTechU Techccelerator app uses the following technologies: Node.js, EJS/E
 
 ## Getting Started
 
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 To get started with the project visit the [`getting started`](GETTING_STARTED.md) documentation. The document outlines how to get a copy running locally/publicly and how to setup the app.
 
 ## Contributing

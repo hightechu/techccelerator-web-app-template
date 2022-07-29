@@ -1,1 +1,1 @@
-worker: node server.js
+web: npm install -g nodemon && npm update && nodemon
