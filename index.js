@@ -37,11 +37,10 @@ var app = express()
 
 // Authentication Router
 // Handles HTTP requests that go to https://webapp/auth
+var fakeHash = bcrypt.hash('2', saltRounds, (err, hash) => { return hash });
 var auth = express.Router()
 
 auth.use(function (req, res, next) {
-  var fakeHash;
-  bcrypt.hash('2', saltRounds, (err, hash) => { fakeHash = hash });
   next()
 })
 
@@ -89,7 +88,7 @@ function loginUser(username, password) {
         })
       }
       else {
-        bcrypt.compare('1', fakeAuth)
+        bcrypt.compare('1', fakeHash)
         return null;
       }
     })
