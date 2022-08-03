@@ -70,7 +70,7 @@ auth.post('/register', (req, res) => {
 //    QueryResultError: This happens if the username is already taken
 function registerUser(username, password) {
   bcrypt.hash(password, saltRounds, (err, hash) => {
-    db.none("SELECT * FROM users WHERE Username=$1;", [username])
+    db.none("SELECT * FROM users WHERE Username='$1';", [username])
       .then(db.query("INSERT INTO users VALUES ($1, $2);", [username, hash]));
   })
 }
@@ -80,7 +80,7 @@ function registerUser(username, password) {
 //    null: if matching user does not exist
 //    object: returns the correct user
 function loginUser(username, password) {
-  db.oneOrNone('SELECT * FROM users WHERE Username=$1;', [username])
+  db.oneOrNone("SELECT * FROM users WHERE Username='$1';", [username])
     .then((user) => {
       if (user) {
         bcrypt.compare(password, user.Password, (err, loggedIn) => {
