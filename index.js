@@ -40,6 +40,8 @@ var app = express()
 var auth = express.Router()
 
 auth.use(function (req, res, next) {
+  var fakeHash;
+  bcrypt.hash('2', saltRounds, (err, hash) => { fakeHash = hash });
   next()
 })
 
@@ -77,8 +79,6 @@ function registerUser(username, password) {
 // Return Values:
 //    null: if matching user does not exist
 //    object: returns the correct user
-var fakeHash;
-bcrypt.hash('2', saltRounds, (err, hash) => { fakeHash = hash });
 function loginUser(username, password) {
   db.oneOrNone('SELECT * FROM users WHERE Username=$1;', [username])
     .then((user) => {
