@@ -47,8 +47,9 @@ auth.use(function (req, res, next) {
 
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  loginUser(req.body.username, req.body.password)
-  res.send("You are logged in as " + req.body.username)
+  if (loginUser(req.body.username, req.body.password) !== null) {
+    res.send("You are logged in as " + req.body.username)
+  }
 })
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
