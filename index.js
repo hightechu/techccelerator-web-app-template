@@ -48,7 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    object: returns the correct user
 var fakeHash = bcrypt.hash('2', saltRounds, (err, hash) => { return hash });
 function loginUser(username, password) {
-  return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
+  db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
     if (user !== null) {
       return bcrypt.compare(password, user.Password, (err, loggedIn) => {
         if (loggedIn) { return user } else { return null }
@@ -80,7 +80,8 @@ function registerUser(username, password) {
   if (db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => { return user })) {
     return false
   } else {
-    return true;
+    db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
+    return true
   }
 }
 
