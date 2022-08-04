@@ -90,7 +90,7 @@ auth.post('/register', (req, res) => {
     if (err.name == "QueryResultError") {
       res.send('That username is already taken.')
       return
-    } else throw err
+    }
   }
   res.send(`User ${req.body.username} has been created!`)
 });
