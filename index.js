@@ -86,7 +86,9 @@ function registerUser(username, password) {
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
-  res.send(`User ${req.body.username} has been created!`)
-}, () => {
-  res.send('That username is already taken.')
+  if (registerUser(req.body.username, req.body.password)) {
+    res.send(`User ${req.body.username} has been created!`)
+  } else {
+    res.send(`User ${req.body.username} already exists.`)
+  }
 });
