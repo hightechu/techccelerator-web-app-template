@@ -91,5 +91,5 @@ auth.post('/register', (req, res) => {
   }
   res.send(`User ${req.body.username} has been created!`)
 }, () => {
-    res.send('That username is already taken.')
-  });
+  res.send('That username is already taken.')
+});
