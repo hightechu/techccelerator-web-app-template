@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const { connect } = require('http2');
 const path = require('path');
 const { errors } = require('pg-promise');
+const { isNull } = require('util');
 const pgp = require('pg-promise')();
 const db = pgp({
   connectionString: process.env.DATABASE_URL,
@@ -62,7 +63,7 @@ function loginUser(username, password) {
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  if (loginUser(req.body.username, req.body.password)) {
+  if (loginUser(req.body.username, req.body.password) !== null) {
     res.send(`You are logged in as ${req.body.username}`)
   } else {
     res.send('The username and password do not match our records.')
