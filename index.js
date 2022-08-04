@@ -82,21 +82,26 @@ auth.post('/login', (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  db.none(`SELECT * FROM users WHERE Username='${username}';`).then(() => {
-    bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-      db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
-    })
+  return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (userExists) => {
+    if (userExists) {
+      return false
+    } else {
+      bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+        db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
+      })
+      return true
+    }
   })
 }
 
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
-  registerUser(req.body.username, req.body.password).then(() => {
-    res.send(`User ${req.body.username} has been created!`)
-  }, () => {
-    res.send(`User ${req.body.username} already exists.`)
-  }).catch((err) => {
-    res.send(`User ${req.body.username} already exists.`)
+  registerUser(req.body.username, req.body.password).then((userRegistered) => {
+    if (userRegistered) {
+      res.send(`User ${req.body.username} has been created!`)
+    } else {
+      res.send(`User ${req.body.username} already exists.`)
+    }
   })
 });
