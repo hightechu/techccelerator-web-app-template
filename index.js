@@ -56,7 +56,7 @@ async function findUser(username) {
 //    object: returns the correct user
 var fakeHash
 bcrypt.hash('2', saltRounds, (err, hash) => { fakeHash = hash });
-async function loginUser(username, password) {
+function loginUser(username, password) {
   var user = await findUser(username)
   if (user) {
     return await bcrypt.compare(password, user.Password)
@@ -69,7 +69,7 @@ async function loginUser(username, password) {
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  if (await loginUser(req.body.username, req.body.password) !== null) {
+  if (loginUser(req.body.username, req.body.password) !== null) {
     res.send(`You are logged in as ${req.body.username}`)
   } else {
     res.send('The username and password do not match our records.')
@@ -81,7 +81,7 @@ auth.post('/login', (req, res) => {
 //   Void
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
-async function registerUser(username, password) {
+function registerUser(username, password) {
   var userExists = await findUser(username) !== null
   if (userExists) {
     return false
@@ -96,7 +96,7 @@ async function registerUser(username, password) {
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
-  if (await registerUser(req.body.username, req.body.password)) {
+  if (registerUser(req.body.username, req.body.password)) {
     res.send(`User ${req.body.username} has been created!`)
   } else {
     res.send(`User ${req.body.username} already exists.`)
