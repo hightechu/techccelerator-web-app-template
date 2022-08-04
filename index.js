@@ -24,7 +24,7 @@ db.query("CREATE TABLE IF NOT EXISTS users ( \
 
 // DEVELOPERS CODE ENDS HERE
 app.use(express.static(path.join(__dirname, 'public')))
-  .use(express.json())
+  .use(express.urlencoded())
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index', { title: 'Home' }))
