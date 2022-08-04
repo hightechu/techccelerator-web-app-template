@@ -43,18 +43,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 // Authentication Router
 // Handles HTTP requests that go to https://webapp/auth
 
-// Find User function
-// Returns true if user exists
-async function findUser(username) {
-  return db.one(`SELECT * FROM users WHERE Username='${username}';`)
-}
-
 // Login User function
 // Return Values:
 //    null: if matching user does not exist
 //    object: returns the correct user
-function loginUser(username, password) {
-  return findUser(username).then((user) => {
+async function loginUser(username, password) {
+  return db.one(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
     return bcrypt.compare(password, user.Password).then((match) => {
       if (match) {
         return user
@@ -88,11 +82,9 @@ auth.post('/login', (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  findUser(username).then((user) => {
-    throw Error("QueryResultError")
-  }, (err) => {
-    bcrypt.hash(password, saltRounds, (err, hash) => {
-      db.query(`INSERT INTO users VALUES ('${username}', '${hash}')`)
+  db.none(`SELECT * FROM users WHERE Username='${username}';`).then(() => {
+    bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+      db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
     })
   })
 }
