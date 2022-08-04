@@ -50,7 +50,7 @@ var fakeHash
 bcrypt.hash('2', saltRounds, (err, hash) => { fakeHash = hash });
 
 async function loginUser(username, password) {
-  return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`).then((user) => {
+  return await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`).then((user) => {
     if (user !== null) {
       return bcrypt.compare(password, user.Password).then((err, loggedIn) => {
         if (loggedIn) { return user } else { return null }
@@ -78,7 +78,7 @@ auth.post('/login', (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
+  return await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
     if (user) {
       return false;
     } else {
