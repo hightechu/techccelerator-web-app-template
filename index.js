@@ -72,7 +72,7 @@ auth.post('/login', (req, res) => {
     }, () => {
       bcrypt.compare('1', fakeHash)
       res.send("The username and password provided do not match our records.")
-    })
+    }).catch((err) => {})
   })
 })
 
