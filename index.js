@@ -48,8 +48,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    null: if matching user does not exist
 //    object: returns the correct user
 async function loginUser(username, password) {
-  return await db.one(`SELECT * FROM users WHERE Username='${username}';`, async (user) =>
-    await bcrypt.compare(password, user.Password).then((match) => {
+  return db.one(`SELECT * FROM users WHERE Username='${username}';`, (user) =>
+    bcrypt.compare(password, user.Password).then((match) => {
       if (match) {
         return user;
       } else {
@@ -61,9 +61,9 @@ async function loginUser(username, password) {
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  bcrypt.hash('2', saltRounds, async (err, fakeHash) => {
-    await loginUser(req.body.username, req.body.password).then((user) => {
-      if (user) {
+  bcrypt.hash('2', saltRounds, (err, fakeHash) => {
+    loginUser(req.body.username, req.body.password).then((user) => {
+      if (user !== null) {
         res.send(`Successfully logged in as ${user.Username}`)
       } else {
         res.send("The username and password provided do not match our records.")
@@ -80,8 +80,8 @@ auth.post('/login', (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  return await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (userExists) => {
-    if (userExists) {
+  return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
+    if (user !== null) {
       return false
     } else {
       bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
@@ -94,8 +94,8 @@ async function registerUser(username, password) {
 
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
-auth.post('/register', async (req, res) => {
-  await registerUser(req.body.username, req.body.password).then((userRegistered) => {
+auth.post('/register', (req, res) => {
+  registerUser(req.body.username, req.body.password).then((userRegistered) => {
     if (userRegistered) {
       res.send(`User ${req.body.username} has been created!`)
     } else {
