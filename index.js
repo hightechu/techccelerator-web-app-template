@@ -4,7 +4,7 @@ const auth = express.Router()
 const bcrypt = require('bcrypt');
 const { connect } = require('http2');
 const path = require('path');
-const { errors } = require('pg-promise');
+const { errors, queryResult } = require('pg-promise');
 const { isNull } = require('util');
 const e = require('express');
 const pgp = require('pg-promise')();
@@ -46,35 +46,29 @@ app.use(express.static(path.join(__dirname, 'public')))
 // Find User function
 // Returns true if user exists
 async function findUser(username) {
-  var user = await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`)
-  return user
+  return db.one(`SELECT * FROM users WHERE Username='${username}';`)
 }
 
 // Login User function
 // Return Values:
 //    null: if matching user does not exist
 //    object: returns the correct user
-var fakeHash
-bcrypt.hash('2', saltRounds, (err, hash) => { fakeHash = hash });
 async function loginUser(username, password) {
-  var user = await findUser(username)
-  if (user) {
-    return await bcrypt.compare(password, user.Password)
-  } else {
-    bcrypt.compare('1', fakeHash)
-    return false
-  }
+  findUser(username).then((user) => {
+    bcrypt.compare(password, user.Password)
+  })
 }
 
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  loginUser(req.body.username, req.body.password).then((userLoggedIn) => {
-    if (userLoggedIn) {
+  bcrypt.hash('2', saltRounds, (fakeHash) => {
+    loginUser(req.body.username, req.body.password).then(() => {
       res.send(`Successfully logged in as ${req.body.username}`)
-    } else {
+    }, () => {
+      bcrypt.compare('1', fakeHash)
       res.send("The username and password provided do not match our records.")
-    }
+    })
   })
 })
 
@@ -84,25 +78,21 @@ auth.post('/login', (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  var userExists = await findUser(username) !== null
-  if (userExists) {
-    return false
-  } else {
+  findUser(username).then((user) => {
+    throw Error("QueryResultError")
+  }, (err) => {
     bcrypt.hash(password, saltRounds, (err, hash) => {
       db.query(`INSERT INTO users VALUES ('${username}', '${hash}')`)
-    });
-    return true
-  }
+    })
+  })
 }
 
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
-  registerUser(req.body.username, req.body.password).then((userRegistered) => {
-    if (userRegistered) {
-      res.send(`User ${req.body.username} has been created!`)
-    } else {
-      res.send(`User ${req.body.username} already exists.`)
-    }
+  registerUser(req.body.username, req.body.password).then(() => {
+    res.send(`User ${req.body.username} has been created!`)
+  }, () => {
+    res.send(`User ${req.body.username} already exists.`)
   })
 });
