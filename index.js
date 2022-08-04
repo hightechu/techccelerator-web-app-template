@@ -72,7 +72,7 @@ auth.post('/login', (req, res) => {
     }, () => {
       bcrypt.compare('1', fakeHash)
       res.send("The username and password provided do not match our records.")
-    }).catch((err) => {})
+    })
   })
 })
 
@@ -95,6 +95,8 @@ auth.post('/register', (req, res) => {
   registerUser(req.body.username, req.body.password).then(() => {
     res.send(`User ${req.body.username} has been created!`)
   }, () => {
+    res.send(`User ${req.body.username} already exists.`)
+  }).catch((err) => {
     res.send(`User ${req.body.username} already exists.`)
   })
 });
