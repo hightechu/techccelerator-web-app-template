@@ -56,7 +56,7 @@ async function findUser(username) {
 //    object: returns the correct user
 var fakeHash
 bcrypt.hash('2', saltRounds, (err, hash) => { fakeHash = hash });
-function loginUser(username, password) {
+async function loginUser(username, password) {
   var user = await findUser(username)
   if (user) {
     return await bcrypt.compare(password, user.Password)
@@ -69,11 +69,13 @@ function loginUser(username, password) {
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  if (loginUser(req.body.username, req.body.password) !== null) {
-    res.send(`You are logged in as ${req.body.username}`)
-  } else {
-    res.send('The username and password do not match our records.')
-  }
+  loginUser(req.body.username, req.body.password).then((userLoggedIn) => {
+    if (userLoggedIn) {
+      res.send(`Successfully logged in as ${req.body.username}`)
+    } else {
+      res.send("The username and password provided do not match our records.")
+    }
+  })
 })
 
 // Register User function
@@ -81,7 +83,7 @@ auth.post('/login', (req, res) => {
 //   Void
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
-function registerUser(username, password) {
+async function registerUser(username, password) {
   var userExists = await findUser(username) !== null
   if (userExists) {
     return false
@@ -96,9 +98,11 @@ function registerUser(username, password) {
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
-  if (registerUser(req.body.username, req.body.password)) {
-    res.send(`User ${req.body.username} has been created!`)
-  } else {
-    res.send(`User ${req.body.username} already exists.`)
-  }
+  registerUser(req.body.username, req.body.password).then((userRegistered) => {
+    if (userRegistered) {
+      res.send(`User ${req.body.username} has been created!`)
+    } else {
+      res.send(`User ${req.body.username} already exists.`)
+    }
+  })
 });
