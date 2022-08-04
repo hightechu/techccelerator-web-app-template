@@ -75,20 +75,17 @@ auth.post('/login', (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 function registerUser(username, password) {
-  bcrypt.hash(password, saltRounds, (err, hash) => {
-    db.none(`SELECT * FROM users WHERE Username='${username}';`)
-      .then(db.query(`INSERT INTO users VALUES ('${username}', '${hash}');`));
-  })
+  var hashedPassword = bcrypt.hash(password, saltRounds, (err, hash) => { return hash })
+  if (db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => { return user })) {
+    return false
+  } else {
+    return true;
+  }
 }
 
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
-  try {
-    registerUser(req.body.username, req.body.password)
-  } catch (err) {
-    res.send(err.message)
-  }
   res.send(`User ${req.body.username} has been created!`)
 }, () => {
   res.send('That username is already taken.')
