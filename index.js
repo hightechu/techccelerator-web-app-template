@@ -85,7 +85,7 @@ async function registerUser(username, password) {
       return false
     } else {
       bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-        await db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
+        db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
       })
       return true
     }
