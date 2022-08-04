@@ -53,9 +53,15 @@ async function findUser(username) {
 // Return Values:
 //    null: if matching user does not exist
 //    object: returns the correct user
-async function loginUser(username, password) {
-  findUser(username).then((user) => {
-    bcrypt.compare(password, user.Password)
+function loginUser(username, password) {
+  return findUser(username).then((user) => {
+    return bcrypt.compare(password, user.Password).then((match) => {
+      if (match) {
+        return user
+      } else {
+        return null
+      }
+    })
   })
 }
 
@@ -63,8 +69,12 @@ async function loginUser(username, password) {
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
   bcrypt.hash('2', saltRounds, (err, fakeHash) => {
-    loginUser(req.body.username, req.body.password).then(() => {
-      res.send(`Successfully logged in as ${req.body.username}`)
+    loginUser(req.body.username, req.body.password).then((user) => {
+      if (user) {
+        res.send(`Successfully logged in as ${user.Username}`)
+      } else {
+        res.send("The username and password provided do not match our records.")
+      }
     }, () => {
       bcrypt.compare('1', fakeHash)
       res.send("The username and password provided do not match our records.")
