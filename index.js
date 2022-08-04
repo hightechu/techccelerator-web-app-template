@@ -62,7 +62,7 @@ async function loginUser(username, password) {
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  bcrypt.hash('2', saltRounds, (fakeHash) => {
+  bcrypt.hash('2', saltRounds, (err, fakeHash) => {
     loginUser(req.body.username, req.body.password).then(() => {
       res.send(`Successfully logged in as ${req.body.username}`)
     }, () => {
