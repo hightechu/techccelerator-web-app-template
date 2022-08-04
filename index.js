@@ -48,7 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    object: returns the correct user
 var fakeHash = bcrypt.hash('2', saltRounds, (err, hash) => { return hash });
 function loginUser(username, password) {
-  db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
+  return await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
     if (user !== null) {
       return bcrypt.compare(password, user.Password, (err, loggedIn) => {
         if (loggedIn) { return user } else { return null }
@@ -77,7 +77,7 @@ auth.post('/login', (req, res) => {
 //    QueryResultError: This happens if the username is already taken
 function registerUser(username, password) {
   var hashedPassword = bcrypt.hash(password, saltRounds, (err, hash) => { return hash })
-  if (db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => { return user })) {
+  if (await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => { return user })) {
     return false
   } else {
     db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
