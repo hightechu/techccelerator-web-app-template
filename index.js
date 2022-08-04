@@ -47,9 +47,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    object: returns the correct user
 var fakeHash = bcrypt.hash('2', saltRounds, (err, hash) => { return hash });
 function loginUser(username, password) {
-  db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
+  return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
     if (user) {
-      bcrypt.compare(password, user.Password, (err, loggedIn) => {
+      return bcrypt.compare(password, user.Password, (err, loggedIn) => {
         if (loggedIn) { return user; }
       })
     } else {
