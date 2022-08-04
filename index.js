@@ -65,7 +65,7 @@ async function loginUser(username, password) {
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  if (await loginUser(req.body.username, req.body.password) !== null) {
+  if (loginUser(req.body.username, req.body.password) !== null) {
     res.send(`You are logged in as ${req.body.username}`)
   } else {
     res.send('The username and password do not match our records.')
@@ -94,7 +94,7 @@ async function registerUser(username, password) {
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
-  if (await registerUser(req.body.username, req.body.password)) {
+  if (registerUser(req.body.username, req.body.password)) {
     res.send(`User ${req.body.username} has been created!`)
   } else {
     res.send(`User ${req.body.username} already exists.`)
