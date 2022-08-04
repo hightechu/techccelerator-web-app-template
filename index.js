@@ -48,14 +48,14 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    null: if matching user does not exist
 //    object: returns the correct user
 async function loginUser(username, password) {
-  return await db.one(`SELECT * FROM users WHERE Username='${username}';`, async (user) =>
-    await bcrypt.compare(password, user.Password).then((match) => {
+  return await db.one(`SELECT * FROM users WHERE Username='${username}';`, async (user) => {
+    return await bcrypt.compare(password, user.Password).then((match) => {
       if (match) {
         return user;
       } else {
         return null;
       }
-    }))
+    })})
 }
 
 // Login page methods
