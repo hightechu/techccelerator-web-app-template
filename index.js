@@ -49,9 +49,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 var fakeHash = bcrypt.hash('2', saltRounds, (err, hash) => { return hash });
 function loginUser(username, password) {
   return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
-    if (user) {
+    if (user !== null) {
       return bcrypt.compare(password, user.Password, (err, loggedIn) => {
-        if (loggedIn) { return user; }
+        if (loggedIn) { return user } else { return null }
       })
     } else {
       bcrypt.compare('1', fakeAuth)
