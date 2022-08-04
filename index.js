@@ -46,15 +46,17 @@ app.use(express.static(path.join(__dirname, 'public')))
 // Return Values:
 //    null: if matching user does not exist
 //    object: returns the correct user
-var fakeHash = bcrypt.hash('2', saltRounds, (err, hash) => { return hash });
-function loginUser(username, password) {
-  return await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
+var fakeHash
+bcrypt.hash('2', saltRounds, (err, hash) => { fakeHash = hash });
+
+async function loginUser(username, password) {
+  return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`).then((user) => {
     if (user !== null) {
-      return bcrypt.compare(password, user.Password, (err, loggedIn) => {
+      return bcrypt.compare(password, user.Password).then((err, loggedIn) => {
         if (loggedIn) { return user } else { return null }
       })
     } else {
-      bcrypt.compare('1', fakeAuth)
+      bcrypt.compare('1', fakeHash)
       return null;
     }
   })
@@ -63,7 +65,7 @@ function loginUser(username, password) {
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', (req, res) => {
-  if (loginUser(req.body.username, req.body.password) !== null) {
+  if (await loginUser(req.body.username, req.body.password) !== null) {
     res.send(`You are logged in as ${req.body.username}`)
   } else {
     res.send('The username and password do not match our records.')
@@ -75,20 +77,24 @@ auth.post('/login', (req, res) => {
 //   Void
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
-function registerUser(username, password) {
-  var hashedPassword = bcrypt.hash(password, saltRounds, (err, hash) => { return hash })
-  if (await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => { return user })) {
-    return false
-  } else {
-    db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
-    return true
+async function registerUser(username, password) {
+  return db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
+    if (user) {
+      return false;
+    } else {
+      bcrypt.hash(password, saltRounds, (err, hash) => {
+        db.query(`INSERT INTO users VALUES ('${username}', '${hash}')`)
+      })
+      return true;
+    }
   }
+  );
 }
 
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', (req, res) => {
-  if (registerUser(req.body.username, req.body.password)) {
+  if (await registerUser(req.body.username, req.body.password)) {
     res.send(`User ${req.body.username} has been created!`)
   } else {
     res.send(`User ${req.body.username} already exists.`)
