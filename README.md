@@ -30,7 +30,6 @@ Please adhere to this project's [`code of conduct`](CODE_OF_CONDUCT.md).
 
 ## Useful Links
 
-* [Firebase Console](https://console.firebase.google.com)
 * [Heroku](https://www.heroku.com/)
 
 ## Learning Resources
