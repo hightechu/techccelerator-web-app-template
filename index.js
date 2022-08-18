@@ -49,7 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    null: if matching user does not exist
 //    object: returns the correct user
 async function loginUser(username, password) {
-  return await bcrypt.hash('1', saltRounds).then((fakeHash) => {
+  return await bcrypt.hash('1', saltRounds).then(async (fakeHash) => {
     return await db.one(`SELECT * FROM users WHERE Username='${username}'`, async (user) => {
       if (await bcrypt.compare(password, user.Password)) {
         return user
