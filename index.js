@@ -79,10 +79,7 @@ auth.post('/login', async (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  await db.none(`SELECT * FROM users WHERE Username='${username}'`).catch(error => {
-    console.log(error.message || error)
-    return false
-  })
+  await db.none(`SELECT * FROM users WHERE Username='${username}'`)
   const hashedPass = await bcrypt.hash(password, saltRounds)
   return await db.query(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(() => { return true })
 }
@@ -90,7 +87,11 @@ async function registerUser(username, password) {
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', async (req, res) => {
-  const registerdUser = await registerUser(req.body.username, req.body.password)
+  const registerdUser = await registerUser(req.body.username, req.body.password).catch(error => {
+    console.log(error.message || error)
+    return false
+  })
+
   if (registerdUser) {
     res.send(`User "${req.body.username}" has been created.`)
   } else {
