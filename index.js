@@ -86,10 +86,10 @@ async function registerUser(username, password) {
   return await db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
     return await bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
       return await db.query(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(() => { return true })
-    }).catch(error => {
-      console.log(error.message || error)
-      return false
     })
+  }).catch(error => {
+    console.log(error.message || error)
+    return false
   })
 }
 
