@@ -51,7 +51,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 async function loginUser(username, password) {
   return bcrypt.hash('1', saltRounds).then(async (fakeHash) => {
     return db.one(`SELECT * FROM users WHERE Username='${username}'`).then(async (user) => {
-      return bcrypt.compare(password, user.Password, async (loggedIn) => {
+      return await bcrypt.compare(password, user.Password).then(() => {
         if (loggedIn) {
           return user
         } else {
@@ -60,7 +60,7 @@ async function loginUser(username, password) {
       })
     }).catch(async error => {
       console.log(error.message || error)
-      return await bcrypt.compare('2', fakeHash, async () => { return null })
+      return await bcrypt.compare('2', fakeHash).then(async () => { return null })
     })
   })
 }
@@ -83,9 +83,9 @@ auth.post('/login', async (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  return db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
-    return bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
-      return db.tx(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`, () => { return true })
+  return await db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
+    return await bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
+      return await db.tx(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`, () => { return true })
     })
   }).catch(error => {
     console.log(error.message || error)
