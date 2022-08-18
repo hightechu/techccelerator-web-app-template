@@ -53,7 +53,7 @@ async function loginUser(username, password) {
     return await db.one(`SELECT * FROM users WHERE Username='${username}'`, async (user) => {
       return await bcrypt.compare(password, user.Password).then((loggedIn) => {
         if (loggedIn) {
-          return user
+          return user.Username
         } else {
           return null
         }
@@ -69,8 +69,8 @@ async function loginUser(username, password) {
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', async (req, res) => {
   await loginUser(req.body.username, req.body.password).then((user) => {
-    if (user !== null) {
-      res.send(`Successfully logged in as ${user.Username}`)
+    if (user) {
+      res.send(`Successfully logged in as ${user}`)
     } else {
       res.send("The username and password provided do not match our records.")
     }
