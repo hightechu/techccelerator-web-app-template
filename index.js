@@ -49,32 +49,28 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    null: if matching user does not exist
 //    object: returns the correct user
 async function loginUser(username, password) {
-  return await bcrypt.hash('1', saltRounds).then(async (fakeHash) => {
-    return await db.one(`SELECT * FROM users WHERE Username='${username}'`, async (user) => {
-      return await bcrypt.compare(password, user.Password).then((loggedIn) => {
-        if (loggedIn) {
-          return user.Username
-        } else {
-          return null
-        }
-      })
-    }).catch(async error => {
-      console.log(error.message || error)
-      return await bcrypt.compare('2', fakeHash).then(() => { return null })
-    })
+  const fakeHash = await bcrypt.hash('1', saltRounds)
+
+  const user = await db.one(`SELECT * FROM users WHERE Username='${username}'`).catch(async error => {
+    console.log(error.message || error)
+    return await bcrypt.compare('2', fakeHash).then(() => { return null })
   })
+
+  const loggedIn = await bcrypt.compare(password, user.Password)
+  if (loggedIn) {
+    return user
+  } else { return null }
 }
 
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', async (req, res) => {
-  await loginUser(req.body.username, req.body.password).then((user) => {
-    if (user) {
-      res.send(`Successfully logged in as ${user}`)
-    } else {
-      res.send("The username and password provided do not match our records.")
-    }
-  })
+  const user = await loginUser(req.body.username, req.body.password)
+  if (user) {
+    res.send(`Successfully logged in as ${user}`)
+  } else {
+    res.send("The username and password provided do not match our records.")
+  }
 })
 
 // Register User function
@@ -83,20 +79,19 @@ auth.post('/login', async (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  return await db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
-    return await bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
-      return await db.query(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(() => { return true })
-    })
-  }).catch(error => {
+  await db.none(`SELECT * FROM users WHERE Username='${username}'`).catch(error => {
     console.log(error.message || error)
     return false
   })
+  const hashedPass = await bcrypt.hash(password, saltRounds)
+  return await db.query(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(() => { return true })
 }
 
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', async (req, res) => {
-  if (await registerUser(req.body.username, req.body.password)) {
+  const registerdUser = await registerUser(req.body.username, req.body.password)
+  if (registerdUser) {
     res.send(`User "${req.body.username}" has been created.`)
   } else {
     res.send(`User "${req.body.username}" already exists.`)
