@@ -29,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')))
   .use(express.urlencoded())
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
+  // ROUTING EXAMPLES
   .get('/', (req, res) => res.render('pages/index', { title: 'Home' }))
   .get('/help', (req, res) => res.render('pages/help', { title: 'Help' }))
   // ROUTING STARTS HERE
@@ -48,58 +49,56 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    null: if matching user does not exist
 //    object: returns the correct user
 async function loginUser(username, password) {
-  return await db.one(`SELECT * FROM users WHERE Username='${username}';`, async (user) => {
-    return await bcrypt.compare(password, user.Password).then((match) => {
-      if (match) {
-        return user;
+  return await bcrypt.hash('1', saltRounds).then((fakeHash) => {
+    return await db.one(`SELECT * FROM users WHERE Username='${username}'`, async (user) => {
+      if (await bcrypt.compare(password, user.Password)) {
+        return user
       } else {
-        return null;
+        return null
       }
-    })})
+    }).catch(async error => {
+      console.log(error.message || error)
+      return await bcrypt.compare('1', fakeHash).then(() => { return null })
+    })
+  })
 }
 
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
-auth.post('/login', (req, res) => {
-  bcrypt.hash('2', saltRounds, async (err, fakeHash) => {
+auth.post('/login', async (req, res) => {
+  await bcrypt.hash('2', saltRounds).then(async (err, fakeHash) => {
     await loginUser(req.body.username, req.body.password).then((user) => {
       if (user !== null) {
         res.send(`Successfully logged in as ${user.Username}`)
       } else {
         res.send("The username and password provided do not match our records.")
       }
-    }, async () => {
-      await bcrypt.compare('1', fakeHash).then(res.send("The username and password provided do not match our records."))
     })
   })
 })
 
 // Register User function
 // Return Values: 
-//   Void
+//   Bool
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  return await db.oneOrNone(`SELECT * FROM users WHERE Username='${username}';`, (user) => {
-    if (user !== null) {
+  return await db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
+    return await bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
+      return await db.one(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(() => { return true })
+    }).catch(error => {
+      console.log(error.message || error)
       return false
-    } else {
-      bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
-        db.query(`INSERT INTO users VALUES ('${username}', '${hashedPassword}');`)
-      })
-      return true
-    }
+    })
   })
 }
 
 // Register page methods
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', async (req, res) => {
-  await registerUser(req.body.username, req.body.password).then((userRegistered) => {
-    if (userRegistered) {
-      res.send(`User ${req.body.username} has been created!`)
-    } else {
-      res.send(`User ${req.body.username} already exists.`)
-    }
-  })
+  if (await registerUser(req.body.username, req.body.password)) {
+    res.render(`User "${req.body.username}" has been created.`)
+  } else {
+    res.render(`User "${req.body.username}" already exists.`)
+  }
 });
