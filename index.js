@@ -97,8 +97,8 @@ async function registerUser(username, password) {
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', async (req, res) => {
   if (await registerUser(req.body.username, req.body.password)) {
-    res.render(`User "${req.body.username}" has been created.`)
+    res.send(`User "${req.body.username}" has been created.`)
   } else {
-    res.render(`User "${req.body.username}" already exists.`)
+    res.send(`User "${req.body.username}" already exists.`)
   }
 });
