@@ -51,7 +51,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 async function loginUser(username, password) {
   return bcrypt.hash('1', saltRounds).then(async (fakeHash) => {
     return db.one(`SELECT * FROM users WHERE Username='${username}'`).then(async (user) => {
-      return bcrypt.compare(password, user.Password).then((loggedIn) => {
+      return bcrypt.compare(password, user.Password, (loggedIn) => {
         if (loggedIn) {
           return user
         } else {
@@ -85,7 +85,7 @@ auth.post('/login', async (req, res) => {
 async function registerUser(username, password) {
   return db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
     return bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
-      return db.query(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(() => { return true })
+      return db.tx(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(() => { return true })
     })
   }).catch(error => {
     console.log(error.message || error)
