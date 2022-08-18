@@ -58,7 +58,7 @@ async function loginUser(username, password) {
       }
     }).catch(async error => {
       console.log(error.message || error)
-      return await bcrypt.compare('1', fakeHash).then(() => { return null })
+      return await bcrypt.compare('2', fakeHash).then(() => { return null })
     })
   })
 }
@@ -66,14 +66,12 @@ async function loginUser(username, password) {
 // Login page methods
 auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login' }))
 auth.post('/login', async (req, res) => {
-  await bcrypt.hash('2', saltRounds).then(async (err, fakeHash) => {
-    await loginUser(req.body.username, req.body.password).then((user) => {
-      if (user !== null) {
-        res.send(`Successfully logged in as ${user.Username}`)
-      } else {
-        res.send("The username and password provided do not match our records.")
-      }
-    })
+  await loginUser(req.body.username, req.body.password).then((user) => {
+    if (user !== null) {
+      res.send(`Successfully logged in as ${user.Username}`)
+    } else {
+      res.send("The username and password provided do not match our records.")
+    }
   })
 })
 
