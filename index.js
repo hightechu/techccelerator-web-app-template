@@ -85,7 +85,7 @@ auth.post('/login', async (req, res) => {
 async function registerUser(username, password) {
   return db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
     return bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
-      return db.tx(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(() => { return true })
+      return db.tx(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`, () => { return true })
     })
   }).catch(error => {
     console.log(error.message || error)
