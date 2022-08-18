@@ -51,11 +51,13 @@ app.use(express.static(path.join(__dirname, 'public')))
 async function loginUser(username, password) {
   return await bcrypt.hash('1', saltRounds).then(async (fakeHash) => {
     return await db.one(`SELECT * FROM users WHERE Username='${username}'`, async (user) => {
-      if (await bcrypt.compare(password, user.Password)) {
-        return user
-      } else {
-        return null
-      }
+      return await bcrypt.compare(password, user.Password).then((loggedIn) => {
+        if (loggedIn) {
+          return user
+        } else {
+          return null
+        }
+      })
     }).catch(async error => {
       console.log(error.message || error)
       return await bcrypt.compare('2', fakeHash).then(() => { return null })
