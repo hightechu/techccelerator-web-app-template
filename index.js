@@ -66,7 +66,7 @@ auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login'
 auth.post('/login', async (req, res) => {
   await loginUser(req.body.username, req.body.password).then((user) => {
     if (user) {
-      res.send(`Successfully logged in as ${user[0].Username}`)
+      res.send(`Successfully logged in as ${user.Username}`)
     } else {
       res.send("The username and password provided do not match our records.")
     }
