@@ -6,7 +6,6 @@ const { connect } = require('http2');
 const path = require('path');
 const { errors, queryResult } = require('pg-promise');
 const { isNull } = require('util');
-const e = require('express');
 const pgp = require('pg-promise')();
 const db = pgp({
   connectionString: process.env.DATABASE_URL,
@@ -42,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 // AUTH FUNCTIONS
 // Authentication Router
-// Handles HTTP requests that go to https://webapp/auth
+// Handles HTTP requests that go to https://localhost:PORT/auth
 
 // Login User function
 // Return Values:
@@ -75,9 +74,7 @@ auth.post('/login', async (req, res) => {
 
 // Register User function
 // Return Values: 
-//   Bool
-// Possible Error Values:
-//    QueryResultError: This happens if the username is already taken
+//    Bool: True if user successfully registered, false if not!
 async function registerUser(username, password) {
   return db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
     return bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
