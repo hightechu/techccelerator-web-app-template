@@ -50,7 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    object: returns the correct user
 async function loginUser(username, password) {
   return bcrypt.hash('1', saltRounds).then(async (fakeHash) => {
-    return db.one(`SELECT * FROM users WHERE Username='${username}'`).then(async (user) => {
+    return db.one(`SELECT Username, Password FROM users WHERE Username='${username}'`).then(async (user) => {
       return bcrypt.compare(password, user[0].Password).then(async (loggedIn) => {
         if (loggedIn) { return user[0] } else { return null }
       })
