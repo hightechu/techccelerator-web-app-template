@@ -51,11 +51,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 async function loginUser(username, password) {
   return bcrypt.hash('1', saltRounds).then(async (fakeHash) => {
     return db.one(`SELECT * FROM users WHERE Username='${username}'`).then((user) => {
-      if (bcrypt.compare(password, user.Password)) {
-        return user
-      } else {
-        return null
-      }
+      return bcrypt.compare(password, user[0].Password).then(async (loggedIn) => {
+        if (loggedIn) { return user[0] } else { return null }
+      })
     })
   }).catch(async error => {
     console.log(error.message || error)
@@ -68,7 +66,7 @@ auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login'
 auth.post('/login', async (req, res) => {
   await loginUser(req.body.username, req.body.password).then((user) => {
     if (user) {
-      res.send(`Successfully logged in as ${user.Username}`)
+      res.send(`Successfully logged in as ${user[0].Username}`)
     } else {
       res.send("The username and password provided do not match our records.")
     }
