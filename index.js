@@ -54,10 +54,10 @@ async function loginUser(username, password) {
       return bcrypt.compare(password, user[0].Password).then(async (loggedIn) => {
         if (loggedIn) { return user[0] } else { return null }
       })
+    }).catch(async error => {
+      console.log(error.message || error)
+      return await bcrypt.compare('2', fakeHash).then(async () => { return null })
     })
-  }).catch(async error => {
-    console.log(error.message || error)
-    return await bcrypt.compare('2', fakeHash).then(async () => { return null })
   })
 }
 
