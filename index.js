@@ -50,7 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 //    object: returns the correct user
 async function loginUser(username, password) {
   return bcrypt.hash('1', saltRounds).then(async (fakeHash) => {
-    return db.one(`SELECT * FROM users WHERE Username=$1`, username).then(async (user) => {
+    return db.one(`SELECT * FROM users WHERE Username='${username}'`).then(async (user) => {
       return bcrypt.compare(password, user.Password).then(() => {
         if (loggedIn) {
           return user
@@ -83,9 +83,9 @@ auth.post('/login', async (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  return db.none(`SELECT * FROM users WHERE Username=$1`, (username)).then(async () => {
+  return db.none(`SELECT * FROM users WHERE Username='${username}'`).then(async () => {
     return bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
-      return db.query(`INSERT INTO users VALUES ($1, $2)`, (username, hashedPass)).then(async () => { return true })
+      return db.query(`INSERT INTO users VALUES ('${username}', '${hashedPass}')`).then(async () => { return true })
     })
   }).catch(error => {
     console.log(error.message || error)
