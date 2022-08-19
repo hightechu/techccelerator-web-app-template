@@ -83,15 +83,13 @@ auth.post('/login', async (req, res) => {
 // Possible Error Values:
 //    QueryResultError: This happens if the username is already taken
 async function registerUser(username, password) {
-  return db.task(t => {
-    return t.none(`SELECT * FROM users WHERE Username=$1`, (username), async () => {
-      return bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
-        return t.query(`INSERT INTO users VALUES ($1, $2)`, (username, hashedPass), async () => { return true })
-      })
-    }).catch(error => {
-      console.log(error.message || error)
-      return false
+  return db.none(`SELECT * FROM users WHERE Username=$1`, (username)).then(async () => {
+    return bcrypt.hash(password, saltRounds).then(async (hashedPass) => {
+      return db.query(`INSERT INTO users VALUES ($1, $2)`, (username, hashedPass)).then(async () => { return true })
     })
+  }).catch(error => {
+    console.log(error.message || error)
+    return false
   })
 }
 
