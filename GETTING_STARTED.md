@@ -97,6 +97,14 @@ _Note:_ It is important that developers do not work directly in the `main` branc
 
 <h2 id="3">⚙️ Setup Configuration</h2>
 
+After cloning the repository, we should set up a local copy of the database to be able to test on before pushing to main. Create a file in the root folder called `.env` and add the following into it:
+
+```
+DATABASE_URL=postgresql://$(whoami)
+```
+
+Running `npm start` for the first time will create a new table with a username column and a password column.
+
 <h2 id="4">🌎 Deployment to Heroku</h2>
 
 The Techccelerator 2022 web app project comes with an automatic deploy to Heroku button.
