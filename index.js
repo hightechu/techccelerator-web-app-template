@@ -1,7 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const app = express()
 const auth = express.Router()
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const { connect } = require('http2');
 const path = require('path');
 const { errors, queryResult } = require('pg-promise');
