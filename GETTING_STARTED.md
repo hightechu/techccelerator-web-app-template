@@ -103,6 +103,20 @@ After cloning the repository, we should set up a local copy of the database to b
 DATABASE_URL=postgresql://$(whoami)
 ```
 
+We will also need to modify 1 line of code in `index.js`. During local development, please comment out line 13:
+
+```
+// ssl: { rejectUnauthorized: false }
+```
+
+Before pushing your changes, please uncomment line 13:
+
+```
+ssl: { rejectUnauthorized: false }
+```
+
+> This line is essential for deployment, but cannot be present during local development.
+
 Running `npm start` for the first time will create a new table with a username column and a password column.
 
 <h2 id="4">🌎 Deployment to Heroku</h2>
