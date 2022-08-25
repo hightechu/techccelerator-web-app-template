@@ -140,7 +140,7 @@ This is the information on how to set up your local environment and run the proj
 
 ### Test your app
 
-What function should they check out to make sure it all works?
+Go to [localhost:5000](localhost:5000) to ensure that your web app up and running locally.
 
 ### Template functions
 
