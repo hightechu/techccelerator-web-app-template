@@ -1,0 +1,25 @@
+services:
+  
+  db:
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - db-data:/etc/htu-db:Z
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_PASSWORD=hightechu22"
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+
+  web:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - "DATABASE_URL=postgresql://postgres:hightechu22@db/postgres"
+
+volumes:
+  db-data:
