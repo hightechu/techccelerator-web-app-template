@@ -10,7 +10,7 @@ const { isNull } = require('util');
 const pgp = require('pg-promise')();
 const db = pgp({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+    ssl: { rejectUnauthorized: true }
 });
 const PORT = process.env.PORT || 8080
 const saltRounds = 10;
@@ -29,20 +29,20 @@ app.use(express.static(path.join(__dirname, 'public')))
   .use(express.urlencoded())
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
+  .use('/img',express.static(path.join(__dirname, 'public/images')))
+  .use('/js',express.static(path.join(__dirname, 'public/js')))
+  .use('/css',express.static(path.join(__dirname, 'public/stylesheets')))
   // ROUTING EXAMPLES
   .get('/', (req, res) => res.render('pages/index', { title: 'Home' }))
   .get('/help', (req, res) => res.render('pages/help', { title: 'Help' }))
-  // ROUTING STARTS HERE
-
-
+  // DEVELOPERS ADD OWN ROUTING
 
   // ROUTING ENDS HERE
   .use('/auth', auth)
   .listen(PORT, () => console.log(`Listening on ${PORT}`))
 
-// AUTH FUNCTIONS
-// Authentication Router
-// Handles HTTP requests that go to https://localhost:PORT/auth
+
+// AUTH functions to handle HTTP requests that go to https://localhost:PORT/auth
 
 // Login User function
 // Return Values:
@@ -66,9 +66,10 @@ auth.get('/login', (req, res) => res.render('pages/auth/login', { title: 'Login'
 auth.post('/login', async (req, res) => {
   await loginUser(req.body.username, req.body.password).then((user) => {
     if (user) {
-      res.send(`Successfully logged in as ${user.username}`)
+      res.render(
+        'pages/auth/login', { title: 'Login', currentuser: user.username }) // use this to redirect to a page + add variables
     } else {
-      res.send("The username and password provided do not match our records.")
+      res.send("hello world The username and password provided do not match our records.")
     }
   })
 })
