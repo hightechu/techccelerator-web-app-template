@@ -12,7 +12,7 @@ const db = pgp({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 8080
 const saltRounds = 10;
 
 // DATABASE CONFIG
