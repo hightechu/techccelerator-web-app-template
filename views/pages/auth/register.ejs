@@ -9,14 +9,28 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-12">
-          <h1>Register</h1>
-          <form action="/auth/register" method="post" autocomplete="on">
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username"><br>
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password"><br>
-            <input type="submit" value="Submit"><br>
-          </form>
+
+          <% 
+            if (locals.newUser) {
+          %>
+              <div class="alert alert-success" role="alert">
+                 New user <b><%= newUser %></b> successfully created. Please <a href="/">login here.</a>
+              </div>
+          <% 
+             } else {
+          %>
+            <h1>Register</h1>
+            <form action="/auth/register" method="post" autocomplete="on">
+              <label for="username">Username:</label><br>
+              <input type="text" id="username" name="username"><br>
+              <label for="password">Password:</label><br>
+              <input type="password" id="password" name="password"><br>
+              <input type="submit" value="Submit"><br>
+            </form>
+          <% 
+            }
+          %>
+          
         </div>
       </div>
     </div>

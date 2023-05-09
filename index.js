@@ -10,7 +10,7 @@ const { isNull } = require('util');
 const pgp = require('pg-promise')();
 const db = pgp({
   connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: true }
+   // ssl: { rejectUnauthorized: true }
 });
 const PORT = process.env.PORT || 8080
 const saltRounds = 10;
@@ -67,9 +67,9 @@ auth.post('/login', async (req, res) => {
   await loginUser(req.body.username, req.body.password).then((user) => {
     if (user) {
       res.render(
-        'pages/auth/login', { title: 'Login', currentuser: user.username }) // use this to redirect to a page + add variables
+        'pages/auth/login', { title: 'Login Successful!', currentuser: user.username }) // use this to redirect the user to a homepage, etc.
     } else {
-      res.send("hello world The username and password provided do not match our records.")
+      res.send("The username and password provided do not match our records.")
     }
   })
 })
@@ -92,7 +92,9 @@ async function registerUser(username, password) {
 auth.get('/register', (req, res) => res.render('pages/auth/register', { title: 'Register' }))
 auth.post('/register', async (req, res) => {
   if (await registerUser(req.body.username, req.body.password)) {
-    res.send(`User "${req.body.username}" has been created.`)
+    newUser = req.body.username;
+    res.render(
+      'pages/auth/register', { title: 'Registration Successful!', newUser: newUser })
   } else {
     res.send(`User "${req.body.username}" already exists.`)
   }
