@@ -21,7 +21,7 @@ This guide will help you get started with your web application.
 
 <h2 id="1">🔨 Development Tools</h2>
 
-Your development environment must have Git, Node.js, and npm installed. To download Git, visit "[Git](https://git-scm.com)". Node.js installations come with npm. To download these, visit "[Node.js, and npm](https://nodejs.org/en/)".
+Your development environment must have Git, Node.js, npm, and Flyctl (for deployment) installed. To download Git, visit "[Git](https://git-scm.com)". Node.js installations come with npm. To download these, visit "[Node.js, and npm](https://nodejs.org/en/)". To download Flyctl, visit [Fly.io](https://fly.io/docs/flyctl/).
 
 You will need a text editor. Any text editor is fine, but we will be using VS Code. For more information about VS Code, visit [Visual Studio](https://code.visualstudio.com).
 
@@ -29,17 +29,13 @@ Lastly, you will need access to a terminal or command prompt. VS Code provides a
 
 _Note:_ If you are using an online text editor / integrated development environment (Codespaces, Repl.it) you will most likely not need to download Git, Node.js, or npm.
 
-> Optional: You may want to install the Heroku CLI to manually deploy the project with Heroku. For more information, visit [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).
-
 <h2 id="2">🚀 Setup the Project in A Development Environment</h2>
 
 You will need a GitHub account and read/write access to the repository.
 
 _Note:_ HighTechU Students working in a team will have read/write access to your team's project repository.
 
-_Note:_ You will also need admin access on the repository in order to set up automatic Heroku deployments.
-
-> For HighTechU students, your Team Mentor will be the admin on your repository and handle the deployment to Heroku.
+> You will also need admin status to configure deployment using Fly. HighTechU students working in a team should nominate one person to be in charge of this.
 
 Notes:
 
@@ -121,18 +117,64 @@ Running `npm start` for the first time will create a new table with a username c
 
 <h2 id="4">🌎 Deployment to Heroku</h2>
 
-The Techccelerator 2022 web app project comes with an automatic deploy to Heroku button.
+The Techccelerator web app project is set up with a Dockerfile to make it easy to deploy with Fly. It only needs a little bit of setup.
 
-> For HighTechU students, this will already be set up by your Team Mentor. You can skip this section.
+> For HighTechU teams, only one team member (the admin) needs to do this.
 
-- [ ] Set a Heroku Account. For more information, visit "[Heroku](https://www.heroku.com)".
-- [ ] Click on the **Deploy to Heroku** button and follow the prompts:
+### Step 1: Configure Fly
 
-  [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+Ensure that you have flyctl installed. If this is your first time using Fly, please sign up:
 
-- [ ] Enable Automatic Deployments. For more information, visit "[Automatic deploys](https://devcenter.heroku.com/articles/github-integration#automatic-deploys)".
+```
+fly auth signup
+``` 
 
-> _Note:_ Your app will be re-deployed when the `main` branch of your repository is updated. Always test your changes locally before merging your working branch into `main`
+> We recommend signing up with your Github account
+
+### Step 2: Launch your app
+
+```
+fly launch
+```
+
+The CLI will prompt you to name your app: 
+
+```
+? App Name (leave blank to use an auto-generated name):
+? Select organization: Mark Ericksen (personal)
+? Select region: lax (Los Angeles, California (US))
+Created app weathered-wave-1020 in organization personal
+Wrote config file fly.toml
+? Would you like to deploy now? (y/N)
+```
+
+> Enter `y` to deploy immediately.
+
+Once the app is finished deploying (this can take up to 5 minutes), open your app:
+
+```
+fly open 
+```
+
+### Step 3: Configure automatic deployment
+
+The template is already set up for continuous deployment via Github actions, so all you need to do is configure the secrets.
+
+> Essentially, the secret tells Fly to watch this specific repository for changes so that it can automatically redeploy when there is a change.
+
+First, generate a Fly token and copy the token that it returns:
+
+```
+flyctl auth token
+```
+
+On the settings page of your Github repository, navigate to **secrets and variables -> actions** and click on **New repository secret.** Create a new secret called `FLY_API_TOKEN` with the value of the token you copied from the previous step.
+
+> The name of the secret **is** case sensitive.
+
+And you're done!
+
+> Your app will be re-deployed when the `main` branch of your repository is updated. Always test your changes locally before merging your working branch into `main`
 
 <h2 id="5">💡 Local Deployment</h2>
 
@@ -140,19 +182,28 @@ This is the information on how to set up your local environment and run the proj
 
 ### Test your app
 
-Go to [localhost:5000](localhost:5000) to ensure that your web app up and running locally.
+To run your app locally, ensure that line 13 in `index.js` is commented out, so that it looks like this:
+
+```
+//ssl: { rejectUnauthorized: false }
+```
+
+Then, start the app:
+
+```
+npm run start
+```
+
+Go to [localhost:8080](localhost:8080) to ensure that your web app up and running locally.
+
+Changes to the client side, like HTML, CSS, and client side JS will be observed when you refresh the page. In order to make changes to the server side, like changed to `index.js` take effect, simply stop your app with `CTRL C` and then restart it.
 
 ### Template functions
 
-The Techccelerator 2022 web app template comes with the following functions implemented:
+The Techccelerator web app template comes with the following functions implemented:
 
 - Register user
 - Login
-
-The following functions are written and ready for you to implement:
-
-- Read database
-- Write to database
 
 > All pre-written functions are commented in the code
 
