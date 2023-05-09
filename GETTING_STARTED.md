@@ -137,24 +137,40 @@ fly auth signup
 fly launch
 ```
 
-The CLI will prompt you to name your app: 
+The CLI will guide you through the configuration:
 
 ```
-? App Name (leave blank to use an auto-generated name):
-? Select organization: Mark Ericksen (personal)
-? Select region: lax (Los Angeles, California (US))
-Created app weathered-wave-1020 in organization personal
-Wrote config file fly.toml
-? Would you like to deploy now? (y/N)
+An existing fly.toml file was found for app test-template
+? Would you like to copy its configuration to the new app?
+? Choose an app name:
+? Would you like to set up a Postgresql database now?
+? Scale single node pg to zero after one hour?
+? Would you like to set up an Upstash Redis database now?
+? Would you like to deploy now?
 ```
 
-> Enter `y` to deploy immediately.
+In order, the answers you should enter are are:
+
+```
+y
+APP-NAME-HERE
+y
+N
+N
+y
+```
+
+It may also ask for your organization and which region you want to be in. Go ahead and press `ENTER` for both of these to use the defaults.
 
 Once the app is finished deploying (this can take up to 5 minutes), open your app:
 
 ```
 fly open 
 ```
+
+> _Note:_ You may see an error about running virtual machines. Don't worry about this; your app will still be up and running.
+
+> _Note:_ On a free account, you will only be able to run one app using our template.
 
 ### Step 3: Configure automatic deployment
 
