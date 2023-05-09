@@ -15,13 +15,13 @@ This guide will help you get started with your web application.
 
 3. [⚙️ Development environment configuration](#3)
 
-4. [🌎 Deployment to Heroku](#4)
+4. [🌎 Deployment to Fly](#4)
 
 5. [💡 Local deployment](#5)
 
 <h2 id="1">🔨 Development Tools</h2>
 
-Your development environment must have Git, Node.js, npm, and Flyctl (for deployment) installed. To download Git, visit "[Git](https://git-scm.com)". Node.js installations come with npm. To download these, visit "[Node.js, and npm](https://nodejs.org/en/)". To download Flyctl, visit [Fly.io](https://fly.io/docs/flyctl/).
+Your development environment must have Git, Node.js, npm, and Flyctl (for deployment) installed. To download Git, visit [Git](https://git-scm.com). Node.js installations come with npm. To download these, visit [Node.js, and npm](https://nodejs.org/en/). To download Flyctl, visit [Fly.io](https://fly.io/docs/flyctl/).
 
 You will need a text editor. Any text editor is fine, but we will be using VS Code. For more information about VS Code, visit [Visual Studio](https://code.visualstudio.com).
 
@@ -115,7 +115,7 @@ ssl: { rejectUnauthorized: false }
 
 Running `npm start` for the first time will create a new table with a username column and a password column.
 
-<h2 id="4">🌎 Deployment to Heroku</h2>
+<h2 id="4">🌎 Deployment to Fly</h2>
 
 The Techccelerator web app project is set up with a Dockerfile to make it easy to deploy with Fly. It only needs a little bit of setup.
 
@@ -137,24 +137,40 @@ fly auth signup
 fly launch
 ```
 
-The CLI will prompt you to name your app: 
+The CLI will guide you through the configuration:
 
 ```
-? App Name (leave blank to use an auto-generated name):
-? Select organization: Mark Ericksen (personal)
-? Select region: lax (Los Angeles, California (US))
-Created app weathered-wave-1020 in organization personal
-Wrote config file fly.toml
-? Would you like to deploy now? (y/N)
+An existing fly.toml file was found for app test-template
+? Would you like to copy its configuration to the new app?
+? Choose an app name:
+? Would you like to set up a Postgresql database now?
+? Scale single node pg to zero after one hour?
+? Would you like to set up an Upstash Redis database now?
+? Would you like to deploy now?
 ```
 
-> Enter `y` to deploy immediately.
+In order, the answers you should enter are are:
+
+```
+y
+APP-NAME-HERE
+y
+N
+N
+y
+```
+
+It may also ask for your organization and which region you want to be in. Go ahead and press `ENTER` for both of these to use the defaults.
 
 Once the app is finished deploying (this can take up to 5 minutes), open your app:
 
 ```
 fly open 
 ```
+
+> _Note:_ You may see an error about running virtual machines. Don't worry about this; your app will still be up and running.
+
+> _Note:_ On a free account, you will only be able to run one app using our template.
 
 ### Step 3: Configure automatic deployment
 
@@ -185,7 +201,7 @@ This is the information on how to set up your local environment and run the proj
 To run your app locally, ensure that line 13 in `index.js` is commented out, so that it looks like this:
 
 ```
-//ssl: { rejectUnauthorized: false }
+// ssl: { rejectUnauthorized: false }
 ```
 
 Then, start the app:
@@ -196,16 +212,24 @@ npm run start
 
 Go to [localhost:8080](localhost:8080) to ensure that your web app up and running locally.
 
-Changes to the client side, like HTML, CSS, and client side JS will be observed when you refresh the page. In order to make changes to the server side, like changed to `index.js` take effect, simply stop your app with `CTRL C` and then restart it.
+Changes to the client side, like HTML, CSS, and client side JS will be observed when you refresh the page. In order to see your changes to the server side, like changes to `index.js`, simply stop your app with `CTRL C` and then restart it.
+
+Once you're done making changes and everything works how it should, uncomment line 13 of `index.js`:
+
+```
+  ssl: { rejectUnauthorized: false }
+```
+
+Add, commit, and push to your Github branch and then make a pull request!
 
 ### Template functions
 
 The Techccelerator web app template comes with the following functions implemented:
 
 - Register user
-- Login
+- Login user
 
-> All pre-written functions are commented in the code
+> _Hint:_ These functions also give you a basic outline of how to write a function and make a database query.
 
 ### Problems?
 

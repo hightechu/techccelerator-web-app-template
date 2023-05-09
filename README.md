@@ -10,7 +10,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ## Technologies
 
-The HighTechU Techccelerator web app uses the following technologies: Node.js, EJS/Express, Heroku Postgres, Heroku, and Bootstrap.
+The HighTechU Techccelerator web app uses the following technologies: Node.js, EJS/Express, Postgres, Docker, Fly, and Bootstrap.
 
 ## Getting Started
 
@@ -24,20 +24,11 @@ See [`CONTRIBUTING`](.github/CONTRIBUTING.md) for ways to get started.
 
 Please adhere to this project's [`code of conduct`](CODE_OF_CONDUCT.md).
 
-## Documentation
-
-[Documentation](https://hightechu.ca)
-
-## Useful Links
-
-* [Heroku](https://www.heroku.com/)
-
-## Learning Resources
+## Useful Resources
 
 * [EJS Documentation](https://ejs.co/#docs)
 * [Express Documentation](https://expressjs.com/)
-* [Heroku Postgres Documentation](https://devcenter.heroku.com/categories/heroku-postgres)
-* [Heroku Documentation](https://devcenter.heroku.com/categories/reference)
+* [Fly Documentation](https://fly.io/docs/)
 
 ## License
 

@@ -16,11 +16,9 @@ You will need to add each HighTechU Student to the appropriate team. Usually thi
 
 The HighTechU Web App Repository allows for GitHub users to create a new repository using this repository as a template. For more information, visit "[About repository templates](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/creating-a-repository-from-a-template#about-repository-templates)".
 
-You will need to name the new repository appropriately, for now you can name it following the convention below:
+You will need to name the new repository appropriately, with either their team or app name:
 
-`techccelerator-app-team-X`
-
-The HighTechU Students will rename the repository later when they have created their Discord Bot Branding.
+`techccelerator-app-teamName`
 
 > Note: You will create the new repository as `private`. The repository will become `public` after the program is finished.
 
@@ -38,7 +36,7 @@ You will want to set up "Require pull request reviews before merging", "Required
 
 You will need to add each HighTechU Student to the repository (OR alternatively add the appropriate team). You will initially give them read and write access.
 
-> Note: You will be the only person with admin access to the repository. If needed, 1 HighTechU student per team can be granted admin access to configure the Heroku automatic deployment.
+> Note: You will be the only person with admin access to the repository. If needed, 1 HighTechU student per team can be granted admin access to configure the Fly automatic deployment.
 
 For more information about repository access for individuals, visit "[Managing an individual's access to an organization repository](https://docs.github.com/en/organizations/managing-access-to-your-organizations-repositories/managing-an-individuals-access-to-an-organization-repository#managing-an-individuals-access-to-an-organization-repository)".
 
@@ -48,9 +46,9 @@ You will need to add the HighTechU Mentors Team to the repository. You will give
 
 For more information about repository access for teams, visit "[Managing team access to an organization repository](https://docs.github.com/en/organizations/managing-access-to-your-organizations-repositories/managing-team-access-to-an-organization-repository)".
 
-## Deployment to Heroku
+## Deployment to Fly
 
-Please follow the steps outlined on the *Deployment to Heroku* section of [`GETTING_STARTED.md`](GETTING_STARTED.md).
+Please follow the steps outlined on the *Deployment to Fly* section of [`GETTING_STARTED.md`](GETTING_STARTED.md).
 
 ## Conclusion
 

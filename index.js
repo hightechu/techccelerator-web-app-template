@@ -10,7 +10,7 @@ const { isNull } = require('util');
 const pgp = require('pg-promise')();
 const db = pgp({
   connectionString: process.env.DATABASE_URL,
-   // ssl: { rejectUnauthorized: true }
+    ssl: { rejectUnauthorized: true }
 });
 const PORT = process.env.PORT || 8080
 const saltRounds = 10;
