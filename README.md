@@ -14,7 +14,7 @@ The HighTechU Techccelerator web app uses the following technologies: Node.js, E
 
 ## Getting Started
 
-To get started with the project visit the [`getting started`](GETTING_STARTED.md) documentation. The document outlines how to get a copy running locally/publicly and how to setup the app.
+To get started with the project visit the [`getting started`](docs/GETTING_STARTED.md) documentation. The document outlines how to get a copy running locally/publicly and how to setup the app.
 
 ## Contributing
 
