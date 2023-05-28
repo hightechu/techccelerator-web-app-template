@@ -4,7 +4,7 @@ This guide will help you get started with your web application.
 
 > _HighTechU Students:_ Please remember that we are available to help at every step of the process if you need it!
 
-> _Mentors:_ Please ensure that you have correctly set up the repository and deployment before your team starts development: [`MENTORS_INFO.md`](MENTORS_INFO.md)
+> _Mentors:_ Please ensure that you have correctly set up the repository and branch protection before your team starts development: [`MENTORS_INFO.md`](MENTORS_INFO.md)
 
 ## Table of Contents
 
@@ -21,7 +21,7 @@ This guide will help you get started with your web application.
 
 <h2 id="1">🔨 Development Tools</h2>
 
-Your development environment must have Git, Node.js, npm, and Flyctl (for deployment) installed. To download Git, visit [Git](https://git-scm.com). Node.js installations come with npm. To download these, visit [Node.js, and npm](https://nodejs.org/en/). To download Flyctl, visit [Fly.io](https://fly.io/docs/flyctl/).
+Your development environment must have Git, Node.js, npm, Postgres, and Flyctl (for deployment) installed. To download Git, visit [Git](https://git-scm.com). Node.js installations come with npm. To download these, visit [Node.js, and npm](https://nodejs.org/en/). To download Flyctl, visit [Fly.io](https://fly.io/docs/flyctl/). To download Postgres, visit [Postgres](https://www.postgresql.org/download/).
 
 You will need a text editor. Any text editor is fine, but we will be using VS Code. For more information about VS Code, visit [Visual Studio](https://code.visualstudio.com).
 
