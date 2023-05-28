@@ -115,6 +115,24 @@ ssl: { rejectUnauthorized: false }
 
 Running `npm start` for the first time will create a new table with a username column and a password column.
 
+If you're having trouble getting the local project to run, try the following in the `.env` file instead:
+
+```
+DATABASE_URL=postgresql://username:pswrd@localhost
+```
+
+> _Fun fact:_ You can replace `pswrd` with any arbitrary word you like!
+
+Replace `username` with your device's username. If you're not sure, check this by opening up Postgres. Mine is `kiarahosie`:
+
+![Postgres server list](pgex.png)
+
+If you don't see this already, you'll need to create a new server by clicking the + on the bottom left corner:
+
+![Postgres server creation](pgcr.png)
+
+> Ensure the port is 5432
+
 <h2 id="4">🌎 Deployment to Fly</h2>
 
 The Techccelerator web app project is set up with a Dockerfile to make it easy to deploy with Fly. It only needs a little bit of setup.
